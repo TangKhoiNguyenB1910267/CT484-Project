@@ -74,9 +74,9 @@ class EditComicScreen extends StatefulWidget {
       try{
         final comicsManager =context.read<ComicsManager>();
         if(_editedComic.id != null){
-          comicsManager.updateComic(_editedComic);
+          await comicsManager.updateComic(_editedComic);
         }else{
-          comicsManager.addComic(_editedComic);
+          await comicsManager.addComic(_editedComic);
         }
       }catch(error){
         await showErrorDialog(context,'Something went wrong.');

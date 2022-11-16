@@ -74,4 +74,37 @@ class ComicsService extends FirebaseService {
       return null;
     }
   }
+
+   Future<bool> updateComic(Comic comic) async {
+    try {
+      final url = 
+          Uri.parse('$databaseUrl/comics/${comic.id}.json?auth=$token');
+      final response = await http.patch(
+        url,
+        body: json.encode(comic.toJson()),
+      );
+
+      if (response.statusCode !=200){
+        throw Exception(json.decode(response.body)['error']);
+      }
+      return true;
+    } catch (error){
+      print(error) ;
+        return false;
+    }
+  }
+
+  Future<bool> deleteComic(String id) async {
+    try {
+      final url = Uri.parse('$databaseUrl/comics/$id.json?auth=$token');
+      final response = await http.delete(url);
+      if (response.statusCode !=200){
+        throw Exception(json.decode(response.body)['error']);
+      }
+      return true;
+    } catch (error){
+      print(error);
+      return false;
+    }
+  }
 }

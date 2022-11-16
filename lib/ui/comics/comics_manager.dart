@@ -40,21 +40,29 @@ class ComicsManager with ChangeNotifier {
       notifyListeners();
     }
    }
-    void updateComic(Comic comic){
-      final index = _comic.indexWhere((comic) => comic.id==comic.id);
+   Future<void> updateComic(Comic comic) async{
+      final index = _comic.indexWhere((item) => item.id==comic.id);
       if (index >= 0 ){
         _comic[index] = comic;
+        if (await _comicsService.updateComic(comic)){
+           _comic[index] = comic;
         notifyListeners();
+        }    
       }
     }
     void toggleFavoriteStatus(Comic comic){
       final savedStatus = comic.isFavorite;
       comic.isFavorite = !savedStatus;
     }
-    void deleteComic(String id){
-      final index = _comic.indexWhere((comic) => comic.id==id);
+   Future <void> deleteComic(String id) async{
+      final index = _comic.indexWhere((item) => item.id==id);
+      Comic? existingComic = _comic[index];
       _comic.removeAt(index);
       notifyListeners();
+      if (!await _comicsService.deleteComic(id)){
+        _comic.insert(index, existingComic);
+        notifyListeners();
+      }
     }
 
 }
