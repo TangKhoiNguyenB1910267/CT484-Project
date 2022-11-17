@@ -12,7 +12,7 @@ class ComicsService extends FirebaseService {
 
   Future<List<Comic>> fetchComics([bool filterByUser = false]) async {
     final List<Comic> comics = [];
-
+      
     try{
       final filters = 
           filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
@@ -48,7 +48,44 @@ class ComicsService extends FirebaseService {
       return comics;
     }
   }
+  Future<List<Comic>> SearchComics([bool filterByUser = false]) async {
+    final List<Comic> comics = [];
+      
+    try{
+      final filters = 
+          filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+      final comicsUrl = 
+          Uri.parse('$databaseUrl/comics.json?auth=$token&$filters');
+      final response = await http.get(comicsUrl);
+      final comicsMap = json.decode(response.body) as Map<String, dynamic>;
 
+      if (response.statusCode != 200) {
+        print(comicsMap['error']);
+        return comics;
+      }
+
+      final userFavoritesUrl = 
+        Uri.parse('$databaseUrl/userFavorites/$userId.json?auth=$token');
+      final userFavoritesResponse = await http.get(userFavoritesUrl);
+      final userFavoritesMap = json.decode(userFavoritesResponse.body);
+
+      comicsMap.forEach((comicId, comic) {
+        final isFavorite = (userFavoritesMap == null)
+            ? false
+            : (userFavoritesMap[comicId] ?? false);
+        comics.add(
+          Comic.fromJson({
+            'id': comicId,
+            ...comic,
+          }).copyWith(isFavorite: isFavorite),
+        );    
+      });
+      return comics;    
+    } catch (error) {
+      print(error);
+      return comics;
+    }
+  }
   Future<Comic?> addComic(Comic comic) async {
     try{
       final url = Uri.parse('$databaseUrl/comics.json?auth=$token');
@@ -98,6 +135,23 @@ class ComicsService extends FirebaseService {
     try {
       final url = Uri.parse('$databaseUrl/comics/$id.json?auth=$token');
       final response = await http.delete(url);
+      if (response.statusCode !=200){
+        throw Exception(json.decode(response.body)['error']);
+      }
+      return true;
+    } catch (error){
+      print(error);
+      return false;
+    }
+  }
+     Future<bool> saveFavoriteStatus(Comic comic) async {
+    try {
+      final url = Uri.parse('$databaseUrl/userFavorites/$userId/${comic.id}.json?auth=$token');
+      final response = await http.put(
+        url,
+        body: json.encode(comic.isFavorite,
+        ),
+        );
       if (response.statusCode !=200){
         throw Exception(json.decode(response.body)['error']);
       }

@@ -3,7 +3,7 @@ export 'comics/comics_detail_screen.dart';
 export 'comics/comics_manager.dart';
 export 'comics/user_comic_screen.dart';
 export 'comics/edit_comic_screen.dart';
-
+export 'comics/search_comic_manager.dart';
 export 'auth/auth_manager.dart';
 export 'auth/auth_screen.dart';
 

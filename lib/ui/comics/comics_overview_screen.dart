@@ -26,6 +26,17 @@ class _ComicsOverviewScreenState extends State<ComicsOverviewScreen> {
       appBar: AppBar(
         title: const Text('NET Comic'),
         actions: <Widget>[
+           IconButton(
+            onPressed: () {
+              // method to show the search bar
+              showSearch(
+                context: context,
+                // delegate to customize the search bar
+                delegate: CustomSearchDelegate()
+              );
+            },
+            icon: const Icon(Icons.search),
+          ),
           buildComicFilterMenu(),
         ],
       ),

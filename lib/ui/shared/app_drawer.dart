@@ -17,7 +17,7 @@ class AppDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.shop),
+            leading: const Icon(Icons.library_books),
             title: const Text('Comic'),
             onTap: (){
               Navigator.of(context).pushReplacementNamed('/');

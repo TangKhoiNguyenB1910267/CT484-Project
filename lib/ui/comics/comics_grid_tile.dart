@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/comic.dart';
+import '../comics/comics_manager.dart';
 import 'comics_detail_screen.dart';
 import 'comics_manager.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,7 @@ class ComicGridTile extends StatelessWidget{
                         ),
                         color: Theme.of(context).colorScheme.secondary,
                         onPressed: () {
-                          comic.isFavorite = !isFavorite;
+                           ctx.read<ComicsManager>().toggleFavoriteStatus(comic);
                         },
                       );
                     },

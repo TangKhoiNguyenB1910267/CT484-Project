@@ -50,9 +50,12 @@ class ComicsManager with ChangeNotifier {
         }    
       }
     }
-    void toggleFavoriteStatus(Comic comic){
+     Future<void> toggleFavoriteStatus(Comic comic) async {
       final savedStatus = comic.isFavorite;
       comic.isFavorite = !savedStatus;
+       if(!await _comicsService.saveFavoriteStatus(comic)){
+        comic.isFavorite = savedStatus;
+      }
     }
    Future <void> deleteComic(String id) async{
       final index = _comic.indexWhere((item) => item.id==id);
